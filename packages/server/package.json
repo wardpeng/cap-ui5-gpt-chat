@@ -39,5 +39,15 @@
     "build:cds": "echo 'Compiling cds sources...' && cds2types --cds ./srv/index.cds --output ./src/types/ --prefix I -f && cds build && cp .cdsrc.json gen/srv",
     "copy:types": "npx copyfiles -f ./src/types/*Service.ts ./../ui/webapp/types/",
     "build:ts": "echo 'Compiling *.ts sources...' && npx tsc"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "database": "chat.db"
+        }
+      }
+    }
   }
 }

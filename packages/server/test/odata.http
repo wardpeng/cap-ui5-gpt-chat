@@ -1,5 +1,5 @@
 
-@host = http://localhost:3001
+@host = http://localhost:3002
 @auth = Basic pirate:ahoy
 @model = text-davinci-003
 

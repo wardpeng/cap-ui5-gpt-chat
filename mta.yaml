@@ -12,6 +12,8 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
+        # - pnpm ci
+        # - npx -p @sap/cds-dk cds build --production
         - pnpm install
         - pnpm run -r build:cf
 
@@ -20,8 +22,8 @@ modules:
     type: approuter.nodejs
     path: packages/approuter
     parameters:
-      disk-quota: 256M
-      memory: 256M
+      disk-quota: 200M
+      memory: 200M
     requires:
       - name: capui5gptchat-html5-repo-runtime
       - name: capui5gptchat-destination
@@ -37,7 +39,7 @@ modules:
     path: packages/server/gen/srv
     parameters:
       disk-quota: 512M
-      memory: 256M
+      memory: 200M
     requires:
       - name: capui5gptchat-uaa
       - name: capui5gptchat-db
