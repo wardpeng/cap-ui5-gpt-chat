@@ -16,6 +16,19 @@
     "deploy:dev": "run-s build:mta deploy:cf:dev"
   },
   "dependencies": {
-    "pnpm": "^7.28.0"
+    "pnpm": "^7.28.0",
+    "hdb": "^0.19.0"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "hana"
+      },
+      "[hybrid]": {
+        "db": {
+          "kind": "hana"
+        }
+      }
+    }
   }
 }
