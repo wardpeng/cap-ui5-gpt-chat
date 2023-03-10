@@ -28,15 +28,15 @@ service ChatService {
 
 // This only works on SAP HANA
 // @see: https://cap.cloud.sap/docs/guides/authorization#association-paths
-// annotate Messages with @(restrict: [{
-//     grant: [
-//         'WRITE',
-//         'READ',
-//         'UPDATE',
-//         'DELETE'
-//     ],
-//     to   : 'human',
-//     where: 'chat.createdBy = $user'
-// }]);
+annotate Messages with @(restrict: [{
+    grant: [
+        'WRITE',
+        'READ',
+        'UPDATE',
+        'DELETE'
+    ],
+    to   : 'human',
+    where: 'chat.createdBy = $user'
+}]);
 
 }

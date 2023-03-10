@@ -14,5 +14,21 @@
     "build:mta": "npx mbt build -p=cf --mtar=cap-ui5-gpt-chat_1.0.0.mtar",
     "deploy:cf:dev": "cf deploy mta_archives/cap-ui5-gpt-chat_1.0.0.mtar -f -e dev.mtaext",
     "deploy:dev": "run-s build:mta deploy:cf:dev"
+  },
+  "dependencies": {
+    "pnpm": "^7.28.0",
+    "hdb": "^0.19.0"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "hana"
+      },
+      "[hybrid]": {
+        "db": {
+          "kind": "hana"
+        }
+      }
+    }
   }
 }

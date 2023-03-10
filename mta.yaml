@@ -5,13 +5,15 @@ version: 1.0.0
 
 parameters:
   appname: capui5gptchat
-  deploy_mode: html5-repo
+  # deploy_mode: html5-repo
   enable-parallel-deployments: true
 
 build-parameters:
   before-all:
     - builder: custom
       commands:
+        # - pnpm ci
+        # - npx -p @sap/cds-dk cds build --production
         - pnpm install
         - pnpm run -r build:cf
 
@@ -20,10 +22,12 @@ modules:
     type: approuter.nodejs
     path: packages/approuter
     parameters:
-      disk-quota: 256M
-      memory: 256M
+      disk-quota: 1000M
+      memory: 100M
+      routes:
+        - route: https://deloitte-btp-chatgpt.btpbtp.cn
     requires:
-      - name: capui5gptchat-html5-repo-runtime
+      # - name: capui5gptchat-html5-repo-runtime
       - name: capui5gptchat-destination
       - name: capui5gptchat-uaa
       - name: srv-api
@@ -37,7 +41,7 @@ modules:
     path: packages/server/gen/srv
     parameters:
       disk-quota: 512M
-      memory: 256M
+      memory: 200M
     requires:
       - name: capui5gptchat-uaa
       - name: capui5gptchat-db
@@ -49,65 +53,69 @@ modules:
       builder: custom
       commands:
         - pnpm run -r --filter @capui5gptchat/server build
-  - name: capui5gptchat-db-deployer
-    type: hdb
-    path: packages/server/gen/db
-    requires:
-      - name: capui5gptchat-uaa
-      - name: capui5gptchat-db
-  - name: capui5gptchat-ui-content
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: capui5gptchat-html5-repo-host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - artifacts:
-            - capui5gptchat-ui.zip
-          name: capui5gptchat-ui
-          target-path: resources/
-  - name: capui5gptchat-ui
-    type: html5
-    path: packages/ui
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - pnpm run -r --filter @capui5gptchat/ui build
-      supported-platforms: []
-  - name: capui5gptchat-destination-content
-    type: com.sap.application.content
-    build-parameters:
-      no-source: true
-    requires:
-      - name: capui5gptchat-uaa
-        parameters:
-          service-key:
-            name: html5_repo_uaa_key
-      - name: capui5gptchat-html5-repo-host
-        parameters:
-          service-key:
-            name: html5_repo_host_key
-      - name: capui5gptchat-destination
-        parameters:
-          content-target: true
-    parameters:
-      content:
-        instance:
-          existing_destinations_policy: update
-          destinations:
-            - Name: capui5gptchat-html5-repo-host
-              ServiceInstanceName: capui5gptchat-html5-repo-host
-              ServiceKeyName: capui5gptchat-html5-repo-host_key
-              sap.cloud.service: capui5gptchat.service
-            - Name: capui5gptchat-uaa
-              Authentication: OAuth2UserTokenExchange
-              ServiceInstanceName: capui5gptchat-uaa
-              ServiceKeyName: capui5gptchat-uaa-key
-              sap.cloud.service: capui5gptchat.service
+  # - name: capui5gptchat-db-deployer
+  #   type: hdb
+  #   path: packages/server/gen/db
+  #   requires:
+  #     - name: capui5gptchat-uaa
+  #     - name: capui5gptchat-db
+  #   parameters:
+  #     buildpack: nodejs_buildpack
+  #     memory: 150M
+  #     disk-quota: 512M
+    # - name: capui5gptchat-ui-content
+    #   type: com.sap.application.content
+    #   path: .
+    #   requires:
+    #     - name: capui5gptchat-html5-repo-host
+    #       parameters:
+    #         content-target: true
+    # build-parameters:
+    #   build-result: resources
+    #   requires:
+    #     - artifacts:
+    #         - capui5gptchat-ui.zip
+    #       name: capui5gptchat-ui
+    #       target-path: resources/
+    # - name: capui5gptchat-ui
+    #   type: html5
+    #   path: packages/ui
+    #   build-parameters:
+    #     build-result: dist
+    #     builder: custom
+    #     commands:
+    #       - pnpm run -r --filter @capui5gptchat/ui build
+    #     supported-platforms: []
+    # - name: capui5gptchat-destination-content
+    #   type: com.sap.application.content
+    #   build-parameters:
+    #     no-source: true
+    #   requires:
+    #     - name: capui5gptchat-uaa
+    #       parameters:
+    #         service-key:
+    #           name: html5_repo_uaa_key
+    #     - name: capui5gptchat-html5-repo-host
+    #       parameters:
+    #         service-key:
+    #           name: html5_repo_host_key
+    #     - name: capui5gptchat-destination
+    #       parameters:
+    #         content-target: true
+    #   parameters:
+    #     content:
+    #       instance:
+    #         existing_destinations_policy: update
+    #         destinations:
+    #           - Name: capui5gptchat-html5-repo-host
+    #             ServiceInstanceName: capui5gptchat-html5-repo-host
+    #             ServiceKeyName: capui5gptchat-html5-repo-host_key
+    #             sap.cloud.service: capui5gptchat.service
+    #           - Name: capui5gptchat-uaa
+    #             Authentication: OAuth2UserTokenExchange
+    #             ServiceInstanceName: capui5gptchat-uaa
+    #             ServiceKeyName: capui5gptchat-uaa-key
+    #             sap.cloud.service: capui5gptchat.service
 
 resources:
   - name: capui5gptchat-uaa
@@ -150,9 +158,9 @@ resources:
     parameters:
       service: html5-apps-repo
       service-plan: app-host
-  - name: capui5gptchat-html5-repo-runtime
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-runtime
-      service-name: html5-apps-repo-rt
+  # - name: capui5gptchat-html5-repo-runtime
+  #   type: org.cloudfoundry.managed-service
+  #   parameters:
+  #     service: html5-apps-repo
+  #     service-plan: app-runtime
+  #     service-name: html5-apps-repo-rt

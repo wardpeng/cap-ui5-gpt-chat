@@ -66,7 +66,7 @@
                 }
             },
             "db": {
-                "kind": "sqlite",
+                "kind": "hana",
                 "model": [
                     "db",
                     "srv"
